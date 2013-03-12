@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-float A_ini[4][4]={{1,2,3,0},{4,5,6,0},{7,8,9,0},{0,0,0,1}};
+float A_in[4][4]={{3,0,0,10},{0,3,0,20},{0,0,3,30},{0,0,0,1}};
 float A_T[4][4]={0};
 int main(int argc, char *argv[]) 
 {
