@@ -34,6 +34,7 @@
 // [R20 R21 R22 Tz]
 // with various mathematical operations (multiplication, etc.) hard-coded
 // -------------------------------------------------------------------
+#include <math.h>
 
 void 3x3MatMatMult( const float A[3][3], const float B[3][3], float C[3][3] )
 {
