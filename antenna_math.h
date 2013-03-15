@@ -1,9 +1,6 @@
-void 3x3MatMatMult( const float A[3][3], const float B[3][3], float C[3][3] );
-void MatMatMult( const float A[3][4], const float B[3][4], float C[3][4] );
-void MatVecMult( const float A[3][3], const float x[3] , float b[3] );
-void MatTranspose( const float A[3][3], float A_t[3][3] );
-void MatInverse( const float A[3][4] float A_i[3][4] );
-void Euler2RotMat( const int heading, const int elevation, const int bank, float RotMat[3][3] );
-void Cart2Polar( const float cart[3], float polar[2] );
-int round_gap( float f );
-void BuildMat( const int angle[3], const float pos[3], float Mat[3][4] )
+void matMatMult( const float a_mat[3][4], const float b_mat[3][4], float c_mat[3][4] );
+void matInverse( const float a_mat[3][4], float a_inv_mat[3][4] );
+static void euler2Rot( const int rot_vec[3], float rot_mat[3][3] );
+void cartToSpher( const float cart_vec[3], float polar_vec[3] );
+int nearestGapDeg( float degrees, int gap );
+void buildMat( const float pos_vec[3], const int rot_vec[3], float mat[3][4] );

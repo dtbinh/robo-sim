@@ -36,146 +36,105 @@
 // -------------------------------------------------------------------
 #include <math.h>
 
-void 3x3MatMatMult( const float A[3][3], const float B[3][3], float C[3][3] )
-{
-	C[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0] + A[0][2] * B[2][0];
-	C[0][1] = A[0][0] * B[0][1] + A[0][1] * B[1][1] + A[0][2] * B[2][1];
-	C[0][2] = A[0][0] * B[0][2] + A[0][1] * B[1][2] + A[0][2] * B[2][2];
-	C[1][0] = A[1][0] * B[0][0] + A[1][1] * B[1][0] + A[1][2] * B[2][0];
-	C[1][1] = A[1][0] * B[0][1] + A[1][1] * B[1][1] + A[1][2] * B[2][1];
-	C[1][2] = A[1][0] * B[0][2] + A[1][1] * B[1][2] + A[1][2] * B[2][2];
-	C[2][0] = A[2][0] * B[0][0] + A[2][1] * B[1][0] + A[2][2] * B[2][0];
-	C[2][1] = A[2][0] * B[0][1] + A[2][1] * B[1][1] + A[2][2] * B[2][1];
-	C[2][2] = A[2][0] * B[0][2] + A[2][1] * B[1][2] + A[2][2] * B[2][2];
-}
-
 // Multiply matrices. Technically this multiplies matrices which would be 4x4
 // matrices with the last row always being [0 0 0 1]. Hardcoding this instead of
 // inserting the row and doing a full 4x4 matrix multiply reduces computation
-void MatMatMult( const float A[3][4], const float B[3][4], float C[3][4] )
+void matMatMult( const float a_mat[3][4], const float b_mat[3][4], float c_mat[3][4] )
 {
-	C[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0] + A[0][2] * B[2][0];
-	C[0][1] = A[0][0] * B[0][1] + A[0][1] * B[1][1] + A[0][2] * B[2][1];
-	C[0][2] = A[0][0] * B[0][2] + A[0][1] * B[1][2] + A[0][2] * B[2][2];
-	C[0][3] = A[0][0] * B[0][3] + A[0][1] * B[1][3] + A[0][2] * B[2][3] + A[0][3];
-	C[1][0] = A[1][0] * B[0][0] + A[1][1] * B[1][0] + A[1][2] * B[2][0];
-	C[1][1] = A[1][0] * B[0][1] + A[1][1] * B[1][1] + A[1][2] * B[2][1];
-	C[1][2] = A[1][0] * B[0][2] + A[1][1] * B[1][2] + A[1][2] * B[2][2];
-	C[1][3] = A[1][0] * B[0][3] + A[1][1] * B[1][3] + A[1][2] * B[2][3] + A[1][3];
-	C[2][0] = A[2][0] * B[0][0] + A[2][1] * B[1][0] + A[2][2] * B[2][0];
-	C[2][1] = A[2][0] * B[0][1] + A[2][1] * B[1][1] + A[2][2] * B[2][1];
-	C[2][2] = A[2][0] * B[0][2] + A[2][1] * B[1][2] + A[2][2] * B[2][2];
-	C[2][3] = A[2][0] * B[0][3] + A[2][1] * B[1][3] + A[2][2] * B[2][3] + A[2][3];
-}
-
-void MatVecMult( const float A[3][3], const float x[3] , float b[3] )
-{
-	b[0] = A[0][0] * b[0] + A[0][1] * b[1] + A[0][2] * b[2];
-	b[1] = A[1][0] * b[0] + A[1][1] * b[1] + A[1][2] * b[2];
-	b[2] = A[2][0] * b[0] + A[2][1] * b[1] + A[2][2] * b[2];
-}
-
-void MatTranspose( const float A[3][3], float A_t[3][3] )
-{
-
-	A_t[0][0] = A[0][0];
-	A_t[0][1] = A[1][0];
-	A_t[0][2] = A[2][0];
-	A_t[1][0] = A[0][1];
-	A_t[1][1] = A[1][1];
-	A_t[1][2] = A[2][1];
-	A_t[2][0] = A[0][2];
-	A_t[2][1] = A[1][2];
-	A_t[2][2] = A[2][2];
-	
+	c_mat[0][0] = a_mat[0][0] * b_mat[0][0] + a_mat[0][1] * b_mat[1][0] + a_mat[0][2] * b_mat[2][0];
+	c_mat[0][1] = a_mat[0][0] * b_mat[0][1] + a_mat[0][1] * b_mat[1][1] + a_mat[0][2] * b_mat[2][1];
+	c_mat[0][2] = a_mat[0][0] * b_mat[0][2] + a_mat[0][1] * b_mat[1][2] + a_mat[0][2] * b_mat[2][2];
+	c_mat[0][3] = a_mat[0][0] * b_mat[0][3] + a_mat[0][1] * b_mat[1][3] + a_mat[0][2] * b_mat[2][3] + a_mat[0][3];
+	c_mat[1][0] = a_mat[1][0] * b_mat[0][0] + a_mat[1][1] * b_mat[1][0] + a_mat[1][2] * b_mat[2][0];
+	c_mat[1][1] = a_mat[1][0] * b_mat[0][1] + a_mat[1][1] * b_mat[1][1] + a_mat[1][2] * b_mat[2][1];
+	c_mat[1][2] = a_mat[1][0] * b_mat[0][2] + a_mat[1][1] * b_mat[1][2] + a_mat[1][2] * b_mat[2][2];
+	c_mat[1][3] = a_mat[1][0] * b_mat[0][3] + a_mat[1][1] * b_mat[1][3] + a_mat[1][2] * b_mat[2][3] + a_mat[1][3];
+	c_mat[2][0] = a_mat[2][0] * b_mat[0][0] + a_mat[2][1] * b_mat[1][0] + a_mat[2][2] * b_mat[2][0];
+	c_mat[2][1] = a_mat[2][0] * b_mat[0][1] + a_mat[2][1] * b_mat[1][1] + a_mat[2][2] * b_mat[2][1];
+	c_mat[2][2] = a_mat[2][0] * b_mat[0][2] + a_mat[2][1] * b_mat[1][2] + a_mat[2][2] * b_mat[2][2];
+	c_mat[2][3] = a_mat[2][0] * b_mat[0][3] + a_mat[2][1] * b_mat[1][3] + a_mat[2][2] * b_mat[2][3] + a_mat[2][3];
 }
 
 // Calculates the first three rows of the inverse of a 4x4 matrix, assuming
 // the 4x4 matrix has bottom row of [0 0 0 1]
-void MatInverse( const float A[3][4], float A_i[3][4] )
+void matInverse( const float a_mat[3][4], float a_inv_mat[3][4] )
 {
 	// Since the upper left 3x3 portion is an affine orthonormal rotation matrix,
 	// inverse = the transpose
-	A_i[0][0] = A[0][0];
-	A_i[0][1] = A[1][0];
-	A_i[0][2] = A[2][0];
-	A_i[1][0] = A[0][1];
-	A_i[1][1] = A[1][1];
-	A_i[1][2] = A[2][1];
-	A_i[2][0] = A[0][2];
-	A_i[2][1] = A[1][2];
-	A_i[2][2] = A[2][2];
-	// translation (rightmost) column is simply -A_i * translation vector
-	A_i[0][3] = -(A_i[0][0] * A[0][3] + A_i[0][1] * A[1][3] + A_i[0][2] * A[2][3]);
-	A_i[1][3] = -(A_i[1][0] * A[0][3] + A_i[1][1] * A[1][3] + A_i[1][2] * A[2][3]);
-	A_i[2][3] = -(A_i[2][0] * A[0][3] + A_i[2][1] * A[1][3] + A_i[2][2] * A[2][3]);
+	a_inv_mat[0][0] = a_mat[0][0];
+	a_inv_mat[0][1] = a_mat[1][0];
+	a_inv_mat[0][2] = a_mat[2][0];
+	a_inv_mat[1][0] = a_mat[0][1];
+	a_inv_mat[1][1] = a_mat[1][1];
+	a_inv_mat[1][2] = a_mat[2][1];
+	a_inv_mat[2][0] = a_mat[0][2];
+	a_inv_mat[2][1] = a_mat[1][2];
+	a_inv_mat[2][2] = a_mat[2][2];
+	// translation (rightmost) column is simply the upper left 3x3 -(a_inv_mat * translation vector)
+	a_inv_mat[0][3] = -(a_inv_mat[0][0] * a_mat[0][3] + a_inv_mat[0][1] * a_mat[1][3] + a_inv_mat[0][2] * a_mat[2][3]);
+	a_inv_mat[1][3] = -(a_inv_mat[1][0] * a_mat[0][3] + a_inv_mat[1][1] * a_mat[1][3] + a_inv_mat[1][2] * a_mat[2][3]);
+	a_inv_mat[2][3] = -(a_inv_mat[2][0] * a_mat[0][3] + a_inv_mat[2][1] * a_mat[1][3] + a_inv_mat[2][2] * a_mat[2][3]);
 	
 }
 
 // Calculate rotation matrix from Tait-Bryan angles given in integer degrees
-static void Euler2RotMat( const int heading, const int elevation, const int bank, float RotMat[3][3] )
+static void euler2Rot( const int rot_vec[3], float rot_mat[3][3] )
 {
 	float c_heading, s_heading, c_elevation, s_elevation, c_bank, s_bank;
 	
-	c_heading = cosDegrees(heading);
-	s_heading = sinDegrees(heading);	
-	c_elevation = cosDegrees(elevation);
-	s_elevation = sinDegrees(elevation);
-	c_bank = cosDegrees(bank);
-	s_bank = sinDegrees(bank);
+	c_heading = cosDegrees(rot_vec[0]);
+	s_heading = sinDegrees(rot_vec[0]);	
+	c_elevation = cosDegrees(rot_vec[1]);
+	s_elevation = sinDegrees(rot_vec[1]);
+	c_bank = cosDegrees(rot_vec[2]);
+	s_bank = sinDegrees(rot_vec[2]);
 	
-	RotMat[0][0] = c_elevation * c_heading;
-	RotMat[0][1] = -c_elevation * s_heading;
-	RotMat[0][2] = s_elevation;
-	RotMat[1][0] = c_bank * s_heading + c_heading * s_bank * s_elevation;
-	RotMat[1][1] = c_bank * c_heading - s_bank * s_elevation * s_heading;
-	RotMat[1][2] = -c_elevation * s_bank;
-	RotMat[2][0] = s_bank * s_heading - c_bank * c_heading * s_elevation;
-	RotMat[2][1] = c_heading * s_bank + c_bank * s_elevation * s_heading;
-	RotMat[2][2] = c_bank * c_elevation;
+	rot_mat[0][0] = c_elevation * c_heading;
+	rot_mat[0][1] = -c_elevation * s_heading;
+	rot_mat[0][2] = s_elevation;
+	rot_mat[1][0] = c_bank * s_heading + c_heading * s_bank * s_elevation;
+	rot_mat[1][1] = c_bank * c_heading - s_bank * s_elevation * s_heading;
+	rot_mat[1][2] = -c_elevation * s_bank;
+	rot_mat[2][0] = s_bank * s_heading - c_bank * c_heading * s_elevation;
+	rot_mat[2][1] = c_heading * s_bank + c_bank * s_elevation * s_heading;
+	rot_mat[2][2] = c_bank * c_elevation;
 }
 
 // Returns spherical coordinate direction [elevation, azimuth] in degrees
 // based on cartesian input [X,Y,Z]
-void Cart2Polar( const float cart[3], float polar[2] )
+void cartToSpher( const float cart_vec[3], float polar_vec[3] )
 {
 	// radius:
-	float radius;
-	radius = sqrt(cart[0] * cart[0] + cart[1] * cart[1] + cart[2] * cart[2]);
-	// not needed for direction only
+	polar_vec[0] = sqrt(cart_vec[0] * cart_vec[0] + cart_vec[1] * cart_vec[1] + cart_vec[2] * cart_vec[2]);
 	
 	// theta: (elevation)
-	polar[1] = acosDegrees(cart[2] / polar[0]);
+	polar_vec[1] = acosDegrees(cart_vec[2] / polar_vec[0]);
 	
 	// phi: (azimuth)
-	polar[2] = atanDegrees(cart[1] / cart[0]);
+	polar_vec[2] = atanDegrees(cart_vec[1] / cart_vec[0]);
 }
 
-int round_gap( float f )
+// Returns the nearest integer which fits within the multiple of gap
+int nearestGapDeg( float degrees, int gap )
 {
-	int g;
-	const int gap = 10;
-	
-	g = f / gap;
-	if(f>0) return (int)(f + 0.5) * gap;
-	else    return (int)(f - 0.5) * gap;
+	return (int)(degrees / (float)gap + 0.5) * gap;
 }
 
-void BuildMat( const int angle[3], const float pos[3], float Mat[3][4] )
+void buildMat( const float pos_vec[3], const int rot_vec[3], float mat[3][4] )
 {
-	float Rot[3][3];
-	Euler2RotMat(angle[0], angle[1], angle[2], Rot);
+	float rot_mat[3][3];
+	euler2Rot(rot_vec, rot_mat);
 	
-	Mat[0][0] = Rot[0][0];
-	Mat[0][1] = Rot[0][1];
-	Mat[0][2] = Rot[0][2];
-	Mat[0][3] = pos[0];
-	Mat[1][0] = Rot[1][0];
-	Mat[1][1] = Rot[1][1];
-	Mat[1][2] = Rot[1][2];
-	Mat[1][3] = pos[1];
-	Mat[2][0] = Rot[2][0];
-	Mat[2][1] = Rot[2][1];
-	Mat[2][2] = Rot[2][2];
-	Mat[2][3] = pos[2];
+	mat[0][0] = rot_mat[0][0];
+	mat[0][1] = rot_mat[0][1];
+	mat[0][2] = rot_mat[0][2];
+	mat[0][3] = pos_vec[0];
+	mat[1][0] = rot_mat[1][0];
+	mat[1][1] = rot_mat[1][1];
+	mat[1][2] = rot_mat[1][2];
+	mat[1][3] = pos_vec[1];
+	mat[2][0] = rot_mat[2][0];
+	mat[2][1] = rot_mat[2][1];
+	mat[2][2] = rot_mat[2][2];
+	mat[2][3] = pos_vec[2];
 }
