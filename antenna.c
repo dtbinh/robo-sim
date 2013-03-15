@@ -40,21 +40,58 @@ static void antennaGain( const float gain_data[STEPS][STEPS], const float polar_
 	return gain_data[elevation][azimuth];
 }
 
-int signalStrength( const float 1a_pos_vec[3], const float 1v_pos_vec[3], const float 2a_pos_vec[3], 
-				 	const float 2v_pos_vec[3], const int 1a_pos_vec[3], const int 1v_pos_vec[3],
-				  	const int 2a_pos_vec[3], const int 2v_pos_vec[3], const float 1a_gain_data[STEPS][STEPS],
-				  	const float 2a_gain_data[STEPS][STEPS], const int 1a_wavelength, const float 1a_t_power,
-				  	const float 1b_r_sensitivity, float signal_strength ) 
+//	returns signal strength, where 0 = perfect strength (zero distance)
+float signalStrength( const float 1a_pos_vec[3], const float 1v_pos_vec[3], const float 2a_pos_vec[3], 
+				 	  const float 2v_pos_vec[3], const int 1a_rot_vec[3], const int 1v_rot_vec[3],
+				  	  const int 2a_rot_vec[3], const int 2v_rot_vec[3], const float 1a_gain_data[STEPS][STEPS],
+				  	  const float 2a_gain_data[STEPS][STEPS], const int 1a_wavelength, const float 1a_t_power,
+				  	  const float 2a_r_sensitivity ) 
 {	
-	float max_distance;
+	// build matrix representations
+	float 1a_mat[3][4], 1v_mat[3][4], 2a_mat[3][4], 2v_mat[3][4];
+	buildMat(1a_pos_vec, 1a_rot_vec, 1a_mat);
+	buildMat(1v_pos_vec, 1v_rot_vec, 1v_mat);
+	buildMat(2a_pos_vec, 2a_rot_vec, 2a_mat);
+	buildMat(2v_pos_vec, 2v_rot_vec, 2v_mat);
 	
+	// calculate relative vector directions
+	float 1a_from_2a_vec[3], 2a_from_1a_vec[3];
+	relativeVectors(1a_mat, 1v_mat, 2a_mat, 2v_mat, 1a_from_2a_vec, 2a_from_1a_vec)
+	
+	// convert to polar coordinates
+	float 1a_from_2a_pol_vec[3], 2a_from_1a_pol_vec[3];
+	cartToSpher(1a_from_2a_vec, 1a_from_2a_pol_vec);
+	cartToSpher(2a_from_1a_vec, 2a_from_1a_pol_vec);
+	
+	// find antenna gain
+	float t_gain, r_gain;
+	antennaGain(1a_gain_data, 2a_from_1a_pol_vec, t_gain);
+	antennaGain(2a_gain_data, 1a_from_2a_pol_vec, r_gain);
+	
+	// calculate max distance where signal would be received
+	float max_distance;	
 	max_distance =	(sqrt(t_gain * r_gain * 1a_t_power) * 1a_wavelength) / 
-					(sqrt(LOSS_FACTOR * 1b_r_sensitivity) * 4 * pi());
+					(sqrt(LOSS_FACTOR * 2a_r_sensitivity) * 4 * pi());
 	
-	float 1a_mat, 1v_mat, 2a_mat, 2v_mat;
+	// first coordinate of polar vector is the distance.
+	// 0 stregth: distance = max distance. 1 strength: distance = 0
+	return -(2a_from_1a_pol_vec[0] / max_distance) + 1;
+}
+
+//	returns signal strength, where 0 = extent of reception, and 1 = zero distance
+int isConnected( const float 1a_pos_vec[3], const float 1v_pos_vec[3], const float 2a_pos_vec[3], 
+			  	 const float 2v_pos_vec[3], const int 1a_rot_vec[3], const int 1v_rot_vec[3],
+				 const int 2a_rot_vec[3], const int 2v_rot_vec[3], const float 1a_gain_data[STEPS][STEPS],
+				 const float 2a_gain_data[STEPS][STEPS], const int 1a_wavelength, const float 1a_t_power,
+				 const float 2a_r_sensitivity )
+{
+	float signal_strength;
+	signal_strength = signalStrength(1a_pos_vec, 1v_pos_vec, 2a_pos_vec, 2v_pos_vec,
+	 			   					 1a_rot_vec, 1v_rot_vec, 2a_rot_vec, 2v_rot_vec,
+				   					 1a_gain_data, 2a_gain_data, 
+  									 1a_wavelength, 1a_t_power, 2a_r_sensitivity);
 	
-	
-	return distance / max_distance;
+	return signal_strength > 0;
 }
 
 void antennaRead( const string file_name, float out_gain[STEPS][STEPS], float t_wavelength, float t_power, float r_sens )
