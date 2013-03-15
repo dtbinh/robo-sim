@@ -78,7 +78,8 @@ void matInverse( const float a_mat[3][4], float a_inv_mat[3][4] )
 }
 
 // Calculate rotation matrix from Tait-Bryan angles given in integer degrees
-static void euler2Rot( const int rot_vec[3], float rot_mat[3][3] )
+//convert back to static type when done with debugging
+void euler2Rot( const int rot_vec[3], float rot_mat[3][3] )
 {
 	float c_heading, s_heading, c_elevation, s_elevation, c_bank, s_bank;
 	
