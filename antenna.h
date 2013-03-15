@@ -1,3 +1,4 @@
+#include <constants.h>
 static void relativeVectors( const float 1a_mat[3][4], const float 1v_mat[3][4], const float 2a_mat[3][4],
 	const float 2v_mat[3][4], float 1a_from_2a[3], float 2a_from_1a[3]);
 	
