@@ -43,7 +43,7 @@ float A_T[3][4]={0};
 	//END OF SECTION OF CODE // 
 	
 	// Cartesian to Spherical Coordinates //
-	const float cart[3]={1,1,1};
+	const float cart[3]={sqrt(2.0)/2.0,sqrt(2.0)/2.0,1.0};
 	float polar[3]={0};
 	cartToSpher(cart, polar);
 	printf("\nCartesian2Spherical:\n");
