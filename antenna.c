@@ -44,7 +44,7 @@ static void antennaGain( const float gain_data[STEPS][STEPS], const float polar_
 float signalStrength( const float 1a_pos_vec[3], const float 1v_pos_vec[3], const float 2a_pos_vec[3], 
 				 	  const float 2v_pos_vec[3], const int 1a_rot_vec[3], const int 1v_rot_vec[3],
 				  	  const int 2a_rot_vec[3], const int 2v_rot_vec[3], const float 1a_gain_data[STEPS][STEPS],
-				  	  const float 2a_gain_data[STEPS][STEPS], const int 1a_wavelength, const float 1a_t_power,
+				  	  const float 2a_gain_data[STEPS][STEPS], const float 1a_wavelength, const float 1a_t_power,
 				  	  const float 2a_r_sensitivity ) 
 {	
 	// build matrix representations
@@ -82,7 +82,7 @@ float signalStrength( const float 1a_pos_vec[3], const float 1v_pos_vec[3], cons
 int isConnected( const float 1a_pos_vec[3], const float 1v_pos_vec[3], const float 2a_pos_vec[3], 
 			  	 const float 2v_pos_vec[3], const int 1a_rot_vec[3], const int 1v_rot_vec[3],
 				 const int 2a_rot_vec[3], const int 2v_rot_vec[3], const float 1a_gain_data[STEPS][STEPS],
-				 const float 2a_gain_data[STEPS][STEPS], const int 1a_wavelength, const float 1a_t_power,
+				 const float 2a_gain_data[STEPS][STEPS], const float 1a_wavelength, const float 1a_t_power,
 				 const float 2a_r_sensitivity )
 {
 	float signal_strength;
