@@ -103,7 +103,7 @@ void antennaRead( const string file_name, float out_gain[STEPS][STEPS], float t_
 
 	OpenRead(file_handle, io_result, file_name, file_size);  // open for read: "myFile.txt",
 	                                                           // storing its size in 'myFileSize'
-	ReadFloat(file_handle, io_result, t_wavelength);
+	ReadShort(file_handle, io_result, t_wavelength);
 	ReadFloat(file_handle, io_result, t_power);
 	ReadFloat(file_handle, io_result, r_sens);
 	for(int i = 0; i < STEPS; i++)
