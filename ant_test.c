@@ -40,26 +40,37 @@ int main (int argc, char *argv[])
 	float r_sens;
 	antennaRead( "Yagi9dBi.dat", out_gain, &t_wavelength, &t_power, &r_sens );
 	
-	
-	printf("\nout_gain: \n");
-	
-	int i;
-	int j;
-	
-	for( i = 0; i < STEPS; i++) {
-	    for( j = 0; j < STEPS; j++) {
-	        printf("%f ", out_gain[i][j]);
-	    }
-	    printf("\n");
-	}
-	
-	
 	printf("\nwavelength: ");
 	printf("%f", t_wavelength);
 	printf("\ntransmission power: ");
 	printf("%f", t_power);
 	printf("\nreceiving sensitivity: ");
 	printf("%f\n", r_sens);
+	
+	float sig_strength;
+	float a1_pos_vec[3] = {0, 0, 0};
+	float v1_pos_vec[3] = {1, 0, 0};
+	float a2_pos_vec[3] = {0, 0, 0};
+	float v2_pos_vec[3] = {-1, 4, 0};
+	int a1_rot_vec[3] = {0, 110, 0};
+	int v1_rot_vec[3] = {90, 90, 23};
+	int a2_rot_vec[3] = {0, 0, 0};
+	int v2_rot_vec[3] = {0, 0, 0};
+	float a1_gain_data[STEPS][STEPS];
+	float a2_gain_data[STEPS][STEPS];
+	float a1_wavelength;
+	float a1_t_power;
+	float a2_r_sensitivity;
+	
+	antennaRead( "Yagi9dBi.dat", a1_gain_data, &a1_wavelength, &a1_t_power, &a2_r_sensitivity );
+	antennaRead( "Yagi9dBi.dat", a2_gain_data, &a1_wavelength, &a1_t_power, &a2_r_sensitivity );
+	
+	sig_strength = signalStrength( a1_pos_vec, v1_pos_vec, a2_pos_vec, v2_pos_vec, 
+								   a1_rot_vec, v1_rot_vec, a2_rot_vec, v2_rot_vec, 
+								   a1_gain_data, a2_gain_data, a1_wavelength, a1_t_power, a2_r_sensitivity);
+	
+	printf("\nsignal strength: ");
+	printf("%f\n", sig_strength);	
 	
 	return 0;
 }

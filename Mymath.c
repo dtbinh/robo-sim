@@ -1,20 +1,21 @@
 #include <math.h>
 #include "Mymath.h"
- 
+#include <stdio.h>
+
 	//cos
-	float cosDegrees(float degrees)
+	float cosDegrees(int degrees)
 	{  
-		return cos(degrees*PI/180);
+		return (float)cos((float)degrees * pi()/180.f);
 	}
 	//sin
-	float sinDegrees(float degrees)
+	float sinDegrees(int degrees)
 	{
-		return sin(degrees*PI/180);
+		return sin((float)degrees * pi()/180.f);
 	}
 	//tan
-	float tanDegrees(float degrees)
+	float tanDegrees(int degrees)
 	{
-		return sinDegrees(degrees)/cosDegrees(degrees);
+		return sinDegrees(degrees) / cosDegrees(degrees);
 	}	
 	//arccos
 	float acosDegrees(float value)

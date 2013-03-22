@@ -3,9 +3,9 @@
 
 #define PI 3.141592654
 
-float cosDegrees(float degrees);
-float sinDegrees(float degrees); 
-float tanDegrees(float degrees); 
+float cosDegrees(int degrees);
+float sinDegrees(int degrees); 
+float tanDegrees(int degrees); 
 float acosDegrees(float value); 
 float asinDegrees(float value); 
 float atanDegrees(float value);  

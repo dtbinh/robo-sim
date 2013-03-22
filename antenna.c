@@ -1,9 +1,8 @@
 #include "antenna_math.h"
 #include "constants.h"
-#include <stdio.h>
-#define countof(ARRAY) (sizeof (ARRAY) / sizeof *(ARRAY))
 #include <math.h>
 #include "Mymath.h"
+#include <stdio.h>
 
 // Calculate two vectors:
 // a2_from_a1: Vector [x y z] in ant_1 coordinates that points directly at ant_2
@@ -37,7 +36,7 @@ static void relativeVectors( const float a1_mat[3][4], const float v1_mat[3][4],
 }
 
 // Return nearest neighbor point value in a sphereical coordinate system
-static float antennaGain( const float gain_data[STEPS][STEPS], const float polar_vec[3], float gain )
+static float antennaGain( const float gain_data[STEPS][STEPS], const float polar_vec[3] )
 {
 	int elevation, azimuth;
 	
@@ -68,12 +67,12 @@ float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], cons
 	// convert to polar coordinates
 	float a1_from_a2_pol_vec[3], a2_from_a1_pol_vec[3];
 	cartToSpher(a1_from_a2_vec, a1_from_a2_pol_vec);
-	cartToSpher(a2_from_a1_vec, a2_from_a1_pol_vec);
+	cartToSpher(a2_from_a1_vec, a2_from_a1_pol_vec);	
 	
 	// find antenna gain
 	float t_gain, r_gain;
-	antennaGain(a1_gain_data, a2_from_a1_pol_vec, t_gain);
-	antennaGain(a2_gain_data, a1_from_a2_pol_vec, r_gain);
+	t_gain = antennaGain(a1_gain_data, a2_from_a1_pol_vec);
+	r_gain = antennaGain(a2_gain_data, a1_from_a2_pol_vec);
 	
 	// calculate max distance where signal would be received
 	float max_distance;	

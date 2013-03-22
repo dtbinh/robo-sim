@@ -35,7 +35,9 @@
 // with various mathematical operations (multiplication, etc.) hard-coded
 // -------------------------------------------------------------------
 #include <math.h>
+#include "Mymath.h"
 #include "antenna_math.h"
+#include <stdio.h>
 
 // Multiply matrices. Technically this multiplies matrices which would be 4x4
 // matrices with the last row always being [0 0 0 1]. Hardcoding this instead of
@@ -111,15 +113,17 @@ void cartToSpher( const float cart_vec[3], float polar_vec[3] )
 	
 	// theta: (elevation)
 	polar_vec[1] = acosDegrees(cart_vec[2] / polar_vec[0]);
+	if (polar_vec[1] < 0) polar_vec[1] = 360 + polar_vec[1];
 	
 	// phi: (azimuth)
 	polar_vec[2] = atanDegrees(cart_vec[1] / cart_vec[0]);
+	if (polar_vec[2] < 0) polar_vec[2] = 360 + polar_vec[2];
 }
 
 // Returns the nearest integer which fits within the multiple of gap
 int nearestGapDeg( float degrees, int gap )
 {
-	return (int)(degrees / (float)gap + 0.5) * gap;
+	return (int)(degrees / (float)gap + 0.5);// * gap;
 }
 
 void buildMat( const float pos_vec[3], const int rot_vec[3], float mat[3][4] )

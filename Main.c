@@ -71,12 +71,13 @@ float A_T[3][4]={{0}};
 	// END OF SECTION OF CODE // 
 	
 	// Trig Conversion Implementation //
-	float degrees=360,value=sqrt(2)/2; 
-	printf("\ncosDegrees(%f): ",degrees);
+	int degrees=3;
+	float value=sqrt(2)/2; 
+	printf("\ncosDegrees(%i): ",degrees);
 	printf("%f", cosDegrees(degrees));
-	printf("\nsinDegrees(%f): ",degrees);
+	printf("\nsinDegrees(%i): ",degrees);
 	printf("%f", sinDegrees(degrees));
-	printf("\ntanDegrees(%f): ",degrees);
+	printf("\ntanDegrees(%i): ",degrees);
 	printf("%f", tanDegrees(degrees));
 	printf("\nacosDegrees(%f): ",value);
 	printf("%f", acosDegrees(value));
