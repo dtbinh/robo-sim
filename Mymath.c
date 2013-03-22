@@ -1,6 +1,6 @@
 #include <math.h>
-#define PI 3.141592654
-  
+#include "Mymath.h"
+ 
 	//cos
 	float cosDegrees(float degrees)
 	{  
@@ -30,5 +30,10 @@
 	float atanDegrees(float value)
 	{
 		return (180/PI)*atan(value);
+	}
+	
+	float pi(void)
+	{
+		return PI;
 	}
 	// END OF SECTION OF CODE // 

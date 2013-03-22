@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "Mymath.h"
 #include "antenna_math.h"
+
 const float A_in[3][4]={{1,2,3,10},{4,5,6,20},{7,8,9,30}};
-float A_T[3][4]={0}; 
+float A_T[3][4]={{0}}; 
 	int main(int argc, char *argv[]) 
 {	
 
@@ -24,7 +26,7 @@ float A_T[3][4]={0};
 	
 	// Matrix Multiplication //
 	const float A_mult[3][4]={{1,0,0,10},{0,1,0,20},{0,0,1,30}}, B_mult[3][4]={{1,1,1,40},{1,1,1,30},{1,1,1,20}};
-	float C_mult[3][4]={0};
+	float C_mult[3][4]={{0}};
 	matMatMult(A_mult,B_mult,C_mult);
 	printf("\nInput Matrices Multiplied:\n ");
 	printf("\b\t%f\t %f\t %f\t %f\t\n",C_mult[0][0],C_mult[0][1],C_mult[0][2],C_mult[0][3]);
@@ -34,7 +36,7 @@ float A_T[3][4]={0};
 	
 	// Euler2Rotation //
 	float Rot_3X3[3][3]={{0,0,0},{0,0,0},{0,0,0}};
-	const float *Rot_1X3[3]={0,0,0};
+	const int Rot_1X3[3]={0,0,0};
 	euler2Rot(Rot_1X3,Rot_3X3);
 	printf("\nEuler2Rotation:\n ");
 	printf("\b\t%f\t %f\t %f\n",Rot_3X3[0][0],Rot_3X3[0][1],Rot_3X3[0][2]);
@@ -84,4 +86,5 @@ float A_T[3][4]={0};
 	printf("%f", atanDegrees(value));
 	// END OF SECTION OF CODE // 
 	
+	return 0;
 }

@@ -35,6 +35,7 @@
 // with various mathematical operations (multiplication, etc.) hard-coded
 // -------------------------------------------------------------------
 #include <math.h>
+#include "antenna_math.h"
 
 // Multiply matrices. Technically this multiplies matrices which would be 4x4
 // matrices with the last row always being [0 0 0 1]. Hardcoding this instead of
