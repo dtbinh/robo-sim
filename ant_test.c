@@ -38,7 +38,7 @@ int main (int argc, char *argv[])
 	float t_wavelength;
 	float t_power;
 	float r_sens;
-	antennaRead( "Yagi9dBi.dat", out_gain, t_wavelength, t_power, r_sens );
+	antennaRead( "Yagi9dBi.dat", out_gain, &t_wavelength, &t_power, &r_sens );
 	
 	
 	printf("\nout_gain: \n");

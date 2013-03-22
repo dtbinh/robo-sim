@@ -1,6 +1,7 @@
 #include "antenna_math.h"
 #include "constants.h"
 #include <stdio.h>
+#define countof(ARRAY) (sizeof (ARRAY) / sizeof *(ARRAY))
 #include <math.h>
 #include "Mymath.h"
 
@@ -100,23 +101,30 @@ int isConnected( const float a1_pos_vec[3], const float v1_pos_vec[3], const flo
 	return signal_strength > 0;
 }
 
-void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float t_wavelength, float t_power, float r_sens )
+void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t_wavelength, float *t_power, float *r_sens )
 {
 	FILE *f;
 	int i;
 	int j;
+	float temp;
 	
 	if (f = fopen(file_name, "rb"))
 	{
-		fread(&t_wavelength, 4, 1, f);
-		fread(&t_power, 4, 1, f);
-		fread(&r_sens, 4, 1, f);
+		fread(&temp, 4, 1, f);
+		*t_wavelength = temp;
+		
+		fread(&temp, 4, 1, f);
+		*t_power = temp;
+		
+		fread(&temp, 4, 1, f);
+		*r_sens = temp;
 		
 		for( i = 0; i < STEPS; i++)
 		{
 			for( j = 0; j < STEPS; j++)
 			{
-				fread(&out_gain[i][j], 4, 1, f);
+				fread(&temp, 4, 1, f);
+				out_gain[i][j] = temp;
 			}
 		}
 		

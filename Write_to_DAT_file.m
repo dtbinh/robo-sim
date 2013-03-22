@@ -15,7 +15,7 @@ Data_array_bytesize = Data_array_size*4; %Gives size of single precision(float) 
 
 %% Create results array to pull data from %%
 
-results = zeros([1,Data_array_size]);
+results = single(zeros([1,Data_array_size]));
 results(1)= lambda;
 results(2)= Ant_Tx_Power;
 results(3)= Ant_Rx_Sens;
@@ -23,11 +23,8 @@ results(3)= Ant_Rx_Sens;
 %filling with values equal to current index as a check
 for i=4:Data_array_size
     results(i)=i;
-end    
-%% Write to .dat file
-fid = fopen('Yagi9dBi.dat','w');
-for i=1:length(results)
-    fprintf(fid,'%f ',results(i));
-    fprintf(fid,'\n');
 end
+%% Write to .dat file
+fid = fopen('Yagi9dBi.dat','wb');
+fwrite(fid, results, 'single');
 fclose(fid);
