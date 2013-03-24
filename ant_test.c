@@ -61,9 +61,10 @@ int main (int argc, char *argv[])
 	float a1_wavelength;
 	float a1_t_power;
 	float a2_r_sensitivity;
+	float reflection_coef;
 	
-	antennaRead( "Yagi9dBi.dat", a1_gain_data, &a1_wavelength, &a1_t_power, &a2_r_sensitivity );
-	antennaRead( "Yagi9dBi.dat", a2_gain_data, &a1_wavelength, &a1_t_power, &a2_r_sensitivity );
+	antennaRead( "Yagi9dBi.dat", a1_gain_data, &a1_wavelength, &a1_t_power, &a2_r_sensitivity, a1_reflect_coef );
+	antennaRead( "Yagi9dBi.dat", a2_gain_data, &a1_wavelength, &a1_t_power, &a2_r_sensitivity, a2_reflect_coef );
 	
 	sig_strength = signalStrength( a1_pos_vec, v1_pos_vec, a2_pos_vec, v2_pos_vec, 
 								   a1_rot_vec, v1_rot_vec, a2_rot_vec, v2_rot_vec, 

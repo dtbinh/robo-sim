@@ -14,6 +14,7 @@ int isConnected( const float a1_pos_vec[3], const float v1_pos_vec[3], const flo
 				 const float a2_gain_data[STEPS][STEPS], const float a1_wavelength, const float a1_t_power,
 				 const float a2_r_sensitivity );
 				
-void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t_wavelength, float *t_power, float *r_sens );			
+void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t_wavelength, float *t_power,
+				  float *r_sens, float *reflect_coef );
 
 #endif

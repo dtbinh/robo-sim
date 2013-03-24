@@ -100,7 +100,8 @@ int isConnected( const float a1_pos_vec[3], const float v1_pos_vec[3], const flo
 	return signal_strength > 0;
 }
 
-void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t_wavelength, float *t_power, float *r_sens )
+void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t_wavelength, 
+				  float *t_power, float *r_sens, float *reflect_coef )
 {
 	FILE *f;
 	int i;
@@ -117,6 +118,12 @@ void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t
 		
 		fread(&temp, 4, 1, f);
 		*r_sens = temp;
+		
+		fread(&temp, 4, 1, f);
+		*reflect_coef = (temp - 1 / temp + 1)	// temp is VSWR from antenna datasheet
+		
+		//fread(&temp, 4, 1, f);
+		//	need to put something in here to read the polarization information with which we calculate PLF	
 		
 		for( i = 0; i < STEPS; i++)
 		{
