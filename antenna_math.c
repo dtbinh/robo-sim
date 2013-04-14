@@ -34,10 +34,13 @@
 // [R20 R21 R22 Tz]
 // with various mathematical operations (multiplication, etc.) hard-coded
 // -------------------------------------------------------------------
-#include <math.h>
-#include "Mymath.h"
+
+// USED FOR OFFLINE COMPILATION IN C (not robotC) 
+// #include "Mymath.h"
+// #include <math.h>
+// #include <stdio.h>
+
 #include "antenna_math.h"
-#include <stdio.h>
 
 // Multiply matrices. Technically this multiplies matrices which would be 4x4
 // matrices with the last row always being [0 0 0 1]. Hardcoding this instead of

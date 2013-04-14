@@ -1,8 +1,11 @@
 #include "antenna_math.h"
 #include "constants.h"
-#include <math.h>
-#include "Mymath.h"
-#include <stdio.h>
+
+
+// USED FOR OFFLINE COMPILATION IN C (not robotC)
+// #include <math.h>
+// #include "Mymath.h"
+// #include <stdio.h>
 
 // Calculate two vectors:
 // a2_from_a1: Vector [x y z] in ant_1 coordinates that points directly at ant_2
