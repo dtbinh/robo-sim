@@ -8,7 +8,8 @@
 // a2_from_a1: Vector [x y z] in ant_1 coordinates that points directly at ant_2
 // a1_from_a2: Vector [x y z] in ant_2 coordinates that points directly at ant_1
 static void relativeVectors( const float a1_mat[3][4], const float v1_mat[3][4], const float a2_mat[3][4],
-							 const float v2_mat[3][4], float a1_from_a2[3], float a2_from_a1[3])
+							 const float v2_mat[3][4], float a1_from_a2[3], float a2_from_a1[3],
+							 const float a1_pol[3], float a1_pol_in_a2_vec[3])
 {
 	float t1_mat[3][4];
 	float t2_mat[3][4];
@@ -33,6 +34,12 @@ static void relativeVectors( const float a1_mat[3][4], const float v1_mat[3][4],
 	a1_from_a2[0] = t1_mat[0][3];
 	a1_from_a2[1] = t1_mat[1][3];
 	a1_from_a2[2] = t1_mat[2][3];
+	
+	// calculate antenna 1 polarization vector in antenna 3's coordinate system
+	a1_pol_in_a2_vec[0] = t3_mat[0][0] * a1_pol[0] + t3_mat[0][1] * a1_pol[1] + t3_mat[0][2] * a1_pol[2];
+	a1_pol_in_a2_vec[1] = t3_mat[1][0] * a1_pol[0] + t3_mat[1][1] * a1_pol[1] + t3_mat[1][2] * a1_pol[2];
+	a1_pol_in_a2_vec[2] = t3_mat[2][0] * a1_pol[0] + t3_mat[2][1] * a1_pol[1] + t3_mat[2][2] * a1_pol[2];
+	
 }
 
 // Return nearest neighbor point value in a sphereical coordinate system
@@ -49,9 +56,11 @@ static float antennaGain( const float gain_data[STEPS][STEPS], const float polar
 //	returns signal strength, where 0 = perfect strength (zero distance)
 float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], const float a2_pos_vec[3], 
 				 	  const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
-				  	  const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_gain_data[STEPS][STEPS],
-				  	  const float a2_gain_data[STEPS][STEPS], const float a1_wavelength, const float a1_t_power,
-				  	  const float a2_r_sensitivity ) 
+				  	  const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_pol_vec[3],
+					  const float a1_axial_ratio, const float a2_pol_vec[3], const float a2_axial_ratio,
+					  const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+					  const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
+					  const float a1_reflect_coef, const float a2_reflect_coef ) 
 {	
 	// build matrix representations
 	float a1_mat[3][4], v1_mat[3][4], a2_mat[3][4], v2_mat[3][4];
@@ -62,7 +71,7 @@ float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], cons
 	
 	// calculate relative vector directions
 	float a1_from_a2_vec[3], a2_from_a1_vec[3];
-	relativeVectors(a1_mat, v1_mat, a2_mat, v2_mat, a1_from_a2_vec, a2_from_a1_vec);
+	relativeVectors(a1_mat, v1_mat, a2_mat, v2_mat, a1_from_a2_vec, a2_from_a1_vec, a1_pol_vec, a1_pol_in_a2_vec);
 	
 	// convert to polar coordinates
 	float a1_from_a2_pol_vec[3], a2_from_a1_pol_vec[3];
@@ -74,34 +83,48 @@ float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], cons
 	t_gain = antennaGain(a1_gain_data, a2_from_a1_pol_vec);
 	r_gain = antennaGain(a2_gain_data, a1_from_a2_pol_vec);
 	
+	// find polarization loss
+	float pol_loss;
+	pol_loss = PLF(a1_pol_in_a2_vec, a1_axial_ratio, a2_pol_vec, a2_axial_ratio)
+	
 	// calculate max distance where signal would be received
 	float max_distance;	
 	max_distance =	(sqrt(t_gain * r_gain * a1_t_power) * a1_wavelength) / 
 					(sqrt(LOSS_FACTOR * a2_r_sensitivity) * 4 * pi());
 	
+	
+	float distance, power_received;
+	distance = sqrt(a1_from_a2_vec[0] * a1_from_a2_vec[0] + a1_from_a2_vec[1] * a1_from_a2_vec[1] +
+					a1_from_a2_vec[2] * a1_from_a2_vec[2]);
+	power_received = a1_t_power * t_gain * r_gain * (1 - a1_reflect_coef) * (1 - a1_reflect_coef) * pol_loss *
+					 (a1_wavelength / (4 * pi() * distance));
+				
 	// first coordinate of polar vector is the distance.
 	// 0 stregth: distance = max distance. 1 strength: distance = 0
-	return -(a2_from_a1_pol_vec[0] / max_distance) + 1;
+	return power_received / a2_r_sensitivity;
 }
 
 //	returns signal strength, where 0 = extent of reception, and 1 = zero distance
 int isConnected( const float a1_pos_vec[3], const float v1_pos_vec[3], const float a2_pos_vec[3], 
-			  	 const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
-				 const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_gain_data[STEPS][STEPS],
-				 const float a2_gain_data[STEPS][STEPS], const float a1_wavelength, const float a1_t_power,
-				 const float a2_r_sensitivity )
+				 const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
+				 const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_pol_vec[3],
+				 const float a1_axial_ratio, const float a2_pol_vec[3], const float a2_axial_ratio,
+				 const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+				 const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
+				 const float a1_reflect_coef, const float a2_reflect_coef )
 {
 	float signal_strength;
-	signal_strength = signalStrength(a1_pos_vec, v1_pos_vec, a2_pos_vec, v2_pos_vec,
-	 			   					 a1_rot_vec, v1_rot_vec, a2_rot_vec, v2_rot_vec,
-				   					 a1_gain_data, a2_gain_data, 
-  									 a1_wavelength, a1_t_power, a2_r_sensitivity);
+	signal_strength = signalStrength(a1_pos_vec, v1_pos_vec, a2_pos_vec, v2_pos_vec, a1_rot_vec[3], 
+									 v1_rot_vec, a2_rot_vec, v2_rot_vec, a1_pol_vec, a1_axial_ratio,
+									 a2_pol_vec, a2_axial_ratio, a1_gain_data, a2_gain_data,
+					 				 a1_wavelength, a1_t_power, a2_r_sensitivity, a1_reflect_coef,
+									 a2_reflect_coef);
 	
-	return signal_strength > 0;
+	return signal_strength > 1;
 }
-
-void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t_wavelength, 
-				  float *t_power, float *r_sens, float *reflect_coef )
+/*
+void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float pol_vec[3],
+				  float *axial_ratio, float *t_wavelength, float *t_power, float *r_sens, float *reflect_coef )
 {
 	FILE *f;
 	int i;
@@ -138,18 +161,30 @@ void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float *t
 	}
 	
 }
-/*
-void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float t_wavelength, float t_power, float r_sens )
+*/
+
+void antennaRead( const char file_name[], float t_wavelength, float t_power, float r_sens,
+				  float reflect_coef, float pol_vec[3], float axial_ratio,
+				  float out_gain[STEPS][STEPS] )
 {
 	TFileHandle file_handle;	// create a file handle variable 'myFileHandle'
 	TFileIOResult io_result;	// create an IO result variable 'IOResult'
 	int file_size;
 
-	OpenRead(file_handle, io_result, file_name, file_size);  // open for read: "myFile.txt",
-	                                                           // storing its size in 'myFileSize'
+	OpenRead(file_handle, io_result, file_name, file_size);    // open for read, size is 'myFileSize'
 	ReadFloat(file_handle, io_result, t_wavelength);
 	ReadFloat(file_handle, io_result, t_power);
 	ReadFloat(file_handle, io_result, r_sens);
+	
+	float temp;
+	ReadFloat(file_handle, io_result, temp);
+	reflect_coef = (temp - 1 / temp + 1)	// temp is VSWR from antenna datasheet
+	
+	ReadFloat(file_handle, io_result, pol_vec[0]);
+	ReadFloat(file_handle, io_result, pol_vec[1]);
+	ReadFloat(file_handle, io_result, pol_vec[2]);
+	ReadFloat(file_handle, io_result, axial_ratio);
+	
 	for(int i = 0; i < STEPS; i++)
 	{
 		for(int j = 0; j < STEPS; j++)
@@ -159,4 +194,31 @@ void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float t_
 	}
 	
 }
-*/
+
+
+static float PLF( const float a1_pol_in_a2_vec[3], const float a1_axial_ratio,
+		   const float a2_pol_vec[3], const float a2_axial_ratio )
+{
+	// Poincaire Sphere representations:
+	
+	float a1_latitude, a2_latitude;
+	
+	if (a1_axial_ratio == 0)	{a1_latitude = 0;}
+	else 						{a1_latitude = 2 * atan(1/a1_axial_ratio);}
+	
+	if (a2_axial_ratio == 0)	{a2+latitude = 0;}
+	else						{a2_latitude = 2 * atan(1/a2_axial_ratio);}
+	
+	float temp, longitude;
+	temp = (a1_pol_in_a2_vec[0] * a2_pol_vec[0] + 
+			a1_pol_in_a2_vec[1] * a2_pol_vec[1] +
+			a1_pol_in_a2_vec[2] * a2_pol_vec[2])
+	
+	longitude = 2 * acos(temp);
+	
+	float great_circle;
+	great_circle = acos(cos(a1_latitude - a2_latitude) * cos(longitude));
+	
+	temp = cos(great_circle / 2);
+	return temp * temp;
+}
