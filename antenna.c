@@ -10,9 +10,9 @@
 // Calculate two vectors:
 // a2_from_a1: Vector [x y z] in ant_1 coordinates that points directly at ant_2
 // a1_from_a2: Vector [x y z] in ant_2 coordinates that points directly at ant_1
-static void relativeVectors( const float a1_mat[3][4], const float v1_mat[3][4], const float a2_mat[3][4],
-							 const float v2_mat[3][4], float a1_from_a2[3], float a2_from_a1[3],
-							 const float a1_pol[3], float a1_pol_in_a2_vec[3])
+static void relativeVectors( const float *a1_mat, const float *v1_mat, const float *a2_mat,
+							 const float *v2_mat, float *a1_from_a2, float *a2_from_a1,
+							 const float *a1_pol, float *a1_pol_in_a2_vec)
 {
 	float t1_mat[3][4];
 	float t2_mat[3][4];
@@ -46,7 +46,7 @@ static void relativeVectors( const float a1_mat[3][4], const float v1_mat[3][4],
 }
 
 // Return nearest neighbor point value in a sphereical coordinate system
-static float antennaGain( const float gain_data[STEPS][STEPS], const float polar_vec[3] )
+static float antennaGain( const float *gain_data, const float *polar_vec )
 {
 	int elevation, azimuth;
 	
@@ -57,11 +57,11 @@ static float antennaGain( const float gain_data[STEPS][STEPS], const float polar
 }
 
 //	returns signal strength, where 0 = perfect strength (zero distance)
-float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], const float a2_pos_vec[3], 
-				 	  const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
-				  	  const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_pol_vec[3],
-					  const float a1_axial_ratio, const float a2_pol_vec[3], const float a2_axial_ratio,
-					  const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+float signalStrength( const float *a1_pos_vec, const float *v1_pos_vec, const float *a2_pos_vec, 
+				 	  const float *v2_pos_vec, const int *a1_rot_vec, const int *v1_rot_vec,
+				  	  const int *a2_rot_vec, const int *v2_rot_vec, const float *a1_pol_vec,
+					  const float a1_axial_ratio, const float *a2_pol_vec, const float a2_axial_ratio,
+					  const float *a1_gain_data[STEPS][STEPS], const float *a2_gain_data[STEPS][STEPS],
 					  const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
 					  const float a1_reflect_coef, const float a2_reflect_coef ) 
 {	
@@ -108,11 +108,11 @@ float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], cons
 }
 
 //	returns signal strength, where 0 = extent of reception, and 1 = zero distance
-int isConnected( const float a1_pos_vec[3], const float v1_pos_vec[3], const float a2_pos_vec[3], 
-				 const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
-				 const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_pol_vec[3],
-				 const float a1_axial_ratio, const float a2_pol_vec[3], const float a2_axial_ratio,
-				 const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+int isConnected( const float *a1_pos_vec, const float *v1_pos_vec, const float *a2_pos_vec, 
+				 const float *v2_pos_vec, const int *a1_rot_vec, const int *v1_rot_vec,
+				 const int *a2_rot_vec, const int *v2_rot_vec, const float *a1_pol_vec,
+				 const float a1_axial_ratio, const float *a2_pol_vec, const float a2_axial_ratio,
+				 const float *a1_gain_data, const float *a2_gain_data,
 				 const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
 				 const float a1_reflect_coef, const float a2_reflect_coef )
 {
@@ -167,8 +167,8 @@ void antennaRead( const char file_name[], float out_gain[STEPS][STEPS], float po
 */
 
 void antennaRead( const char file_name[], float t_wavelength, float t_power, float r_sens,
-				  float reflect_coef, float pol_vec[3], float axial_ratio,
-				  float out_gain[STEPS][STEPS] )
+				  float reflect_coef, float *pol_vec, float axial_ratio,
+				  float *out_gain )
 {
 	TFileHandle file_handle;	// create a file handle variable 'myFileHandle'
 	TFileIOResult io_result;	// create an IO result variable 'IOResult'
@@ -199,8 +199,8 @@ void antennaRead( const char file_name[], float t_wavelength, float t_power, flo
 }
 
 
-static float PLF( const float a1_pol_in_a2_vec[3], const float a1_axial_ratio,
-		   const float a2_pol_vec[3], const float a2_axial_ratio )
+static float PLF( const float *a1_pol_in_a2_vec, const float a1_axial_ratio,
+		   const float *a2_pol_vec, const float a2_axial_ratio )
 {
 	// Poincaire Sphere representations:
 	
