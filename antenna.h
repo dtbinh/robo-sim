@@ -2,24 +2,24 @@
 #define antenna
 #include "constants.h"
 
-float signalStrength( const float a1_pos_vec[3], const float v1_pos_vec[3], const float a2_pos_vec[3], 
-				 	  const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
-				  	  const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_pol_vec[3],
-					  const float a1_axial_ratio, const float a2_pol_vec[3], const float a2_axial_ratio,
-					  const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+float signalStrength( const fvec3 a1_pos_vec, const fvec3 v1_pos_vec, const fvec3 a2_pos_vec, 
+				 	  const fvec3 v2_pos_vec, const ivec3 a1_rot_vec, const ivec3 v1_rot_vec,
+				  	  const ivec3 a2_rot_vec, const ivec3 v2_rot_vec, const fvec3 a1_pol_vec,
+					  const float a1_axial_ratio, const fvec3 a2_pol_vec, const float a2_axial_ratio,
+					  const fmatdata a1_gain_data, const fmatdata a2_gain_data,
 					  const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
 					  const float a1_reflect_coef, const float a2_reflect_coef );
 
-int isConnected( const float a1_pos_vec[3], const float v1_pos_vec[3], const float a2_pos_vec[3], 
-			   	 const float v2_pos_vec[3], const int a1_rot_vec[3], const int v1_rot_vec[3],
-				 const int a2_rot_vec[3], const int v2_rot_vec[3], const float a1_pol_vec[3],
-				 const float a1_axial_ratio, const float a2_pol_vec[3], const float a2_axial_ratio,
-				 const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+int isConnected( const fvec3 a1_pos_vec, const fvec3 v1_pos_vec, const fvec3 a2_pos_vec, 
+			   	 const fvec3 v2_pos_vec, const ivec3 a1_rot_vec, const ivec3 v1_rot_vec,
+				 const ivec3 a2_rot_vec, const ivec3 v2_rot_vec, const fvec3 a1_pol_vec,
+				 const float a1_axial_ratio, const fvec3 a2_pol_vec, const float a2_axial_ratio,
+				 const fmatdata a1_gain_data, const fmatdata a2_gain_data,
 				 const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
 				 const float a1_reflect_coef, const float a2_reflect_coef );
 				
 void antennaRead( const char file_name[], float t_wavelength, float t_power, float r_sens,
-			  	  float reflect_coef, float pol_vec[3], float axial_ratio,
-    			  float out_gain[STEPS][STEPS] );
+			  	  float reflect_coef, fvec3 pol_vec, float axial_ratio,
+    			  fmatdata out_gain );
 
 #endif

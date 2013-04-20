@@ -45,7 +45,7 @@
 // Multiply matrices. Technically this multiplies matrices which would be 4x4
 // matrices with the last row always being [0 0 0 1]. Hardcoding this instead of
 // inserting the row and doing a full 4x4 matrix multiply reduces computation
-void matMatMult( const float a_mat[3][4], const float b_mat[3][4], float c_mat[3][4] )
+void matMatMult( const fmat34 a_mat, const fmat34 b_mat, fmat34 c_mat )
 {
 	c_mat[0][0] = a_mat[0][0] * b_mat[0][0] + a_mat[0][1] * b_mat[1][0] + a_mat[0][2] * b_mat[2][0];
 	c_mat[0][1] = a_mat[0][0] * b_mat[0][1] + a_mat[0][1] * b_mat[1][1] + a_mat[0][2] * b_mat[2][1];
@@ -63,7 +63,7 @@ void matMatMult( const float a_mat[3][4], const float b_mat[3][4], float c_mat[3
 
 // Calculates the first three rows of the inverse of a 4x4 matrix, assuming
 // the 4x4 matrix has bottom row of [0 0 0 1]
-void matInverse( const float a_mat[3][4], float a_inv_mat[3][4] )
+void matInverse( const fmat34 a_mat, fmat34 a_inv_mat )
 {
 	// Since the upper left 3x3 portion is an affine orthonormal rotation matrix,
 	// inverse = the transpose
@@ -85,7 +85,7 @@ void matInverse( const float a_mat[3][4], float a_inv_mat[3][4] )
 
 // Calculate rotation matrix from Tait-Bryan angles given in integer degrees
 //convert back to static type when done with debugging
-void euler2Rot( const int rot_vec[3], float rot_mat[3][3] )
+void euler2Rot( const ivec3 rot_vec, fmat33 rot_mat )
 {
 	float c_heading, s_heading, c_elevation, s_elevation, c_bank, s_bank;
 	
@@ -109,7 +109,7 @@ void euler2Rot( const int rot_vec[3], float rot_mat[3][3] )
 
 // Returns spherical coordinate direction [elevation, azimuth] in degrees
 // based on cartesian input [X,Y,Z]
-void cartToSpher( const float cart_vec[3], float polar_vec[3] )
+void cartToSpher( const fvec3 cart_vec, fvec3 polar_vec )
 {
 	// radius:
 	polar_vec[0] = sqrt(cart_vec[0] * cart_vec[0] + cart_vec[1] * cart_vec[1] + cart_vec[2] * cart_vec[2]);
@@ -129,7 +129,7 @@ int nearestGapDeg( float degrees, int gap )
 	return (int)(degrees / (float)gap + 0.5);// * gap;
 }
 
-void buildMat( const float pos_vec[3], const int rot_vec[3], float mat[3][4] )
+void buildMat( const fvec3 pos_vec, const ivec3 rot_vec, fmat34 mat )
 {
 	float rot_mat[3][3];
 	euler2Rot(rot_vec, rot_mat);
