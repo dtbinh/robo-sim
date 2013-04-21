@@ -112,7 +112,7 @@ int isConnected( const fvec3 a1_pos_vec, const fvec3 v1_pos_vec, const fvec3 a2_
 				 const fvec3 v2_pos_vec, const ivec3 a1_rot_vec, const ivec3 v1_rot_vec,
 				 const ivec3 a2_rot_vec, const ivec3 v2_rot_vec, const fvec3 a1_pol_vec,
 				 const float a1_axial_ratio, const fvec3 a2_pol_vec, const float a2_axial_ratio,
-				 const float a1_gain_data[STEPS][STEPS], const float a2_gain_data[STEPS][STEPS],
+				 const fmatdata a1_gain_data, const fmatdata a2_gain_data,
 				 const float a1_wavelength, const float a1_t_power, const float a2_r_sensitivity,
 				 const float a1_reflect_coef, const float a2_reflect_coef )
 {
