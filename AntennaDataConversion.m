@@ -116,5 +116,48 @@ clc, clear all, close all;
     ylabel('Y', 'Color', 'r','FontSize',20)
     zlabel('Z', 'Color', 'r','FontSize',20)
 
-%% RECTANGULAR COORDINATES TO SPHERICAL   
-    [AZIMUTH,ELEVATION,RADIUS] = cart2sph(Xoriginal,Yoriginal,Zoriginal);
+%% RECTANGULAR COORDINATES TO SPHERICAL
+    X = reshape(Xoriginal, numel(Xoriginal), 1);
+    Y = reshape(Yoriginal, numel(Yoriginal), 1);
+    Z = reshape(Zoriginal, numel(Zoriginal), 1);
+    
+    [az,el,r] = cart2sph(X,Y,Z);
+    
+    %Develop a uniform grid in 2 degree steps for az and el
+    azs = 0*pi/180;
+    azi = 20*pi/180;
+    aze = 350*pi/180;
+    els = 0*pi/180;
+    eli = 20*pi/180;
+    ele = 350*pi/180;
+    
+    [Az_m El_m] = meshgrid(azs:azi:aze,els:eli:ele);
+ 
+    %Interpolate the nonuniform gain data onto the uniform grid
+    Zi = griddata(az,el,r,Az_m,El_m,'cubic');
+    
+
+%% DEFINE NON-GAIN ATTRIBUTES
+    c = 3e8; %speed of light
+    f = 2.4e9; %frequency to calculate lambda
+    lambda = single(c/f); %wavelength
+    
+    Ant_Tx_Power = single(0.001); %output power in watts
+    Ant_Rx_Sens = single(0.000001); %receiving sensitivity in watts
+    ANT_R_Coef = single(0); %antenna reflection coefficient
+    pol_vec = [0, 0, 0];
+    axial_ratio = 1;
+    
+    %% WRITE TO DATA FILE
+    results = zeros(8 + 36^2, 1);
+    results(1)= lambda;
+    results(2)= Ant_Tx_Power;
+    results(3)= Ant_Rx_Sens;
+    results(4)= ANT_R_Coef;
+    results(5:7)= pol_vec;
+    results(8)= axial_ratio;
+    results(9:end)= 1;
+    
+    fid = fopen('SampleAnt.dat','wb');
+    fwrite(fid, results, 'single');
+    fclose(fid);
